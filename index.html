@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rutinas del Hogar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:   #0A0A0A;
+    --dark:    #111827;
+    --gray:    #374151;
+    --grayM:   #6B7280;
+    --grayL:   #F3F4F6;
+    --border:  #E5E7EB;
+    --white:   #FFFFFF;
+    --sidebar-w: 260px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Figtree', system-ui, sans-serif;
+    background: var(--white);
+    color: var(--dark);
+    display: flex;
+    min-height: 100vh;
+    font-size: 14px;
+  }
+
+  /* ─── SIDEBAR ─── */
+  #sidebar {
+    width: var(--sidebar-w);
+    background: #0A0A0A;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    overflow-y: auto;
+    z-index: 100;
+  }
+
+  #sidebar-header {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  #sidebar-header h1 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.3;
+  }
+
+  #sidebar-header p {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    margin-top: 4px;
+  }
+
+  #sidebar nav { padding: 10px 0; flex: 1; }
+
+  .nav-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: rgba(255,255,255,0.28);
+    padding: 14px 20px 4px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    cursor: pointer;
+    transition: background 0.12s;
+    border-left: 2px solid transparent;
+    color: rgba(255,255,255,0.55);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .nav-item:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.9); }
+
+  .nav-item.active {
+    background: rgba(255,255,255,0.08);
+    border-left-color: var(--white);
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  .nav-item .nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+
+  .nav-item .nav-progress {
+    margin-left: auto;
+    font-size: 10px;
+    color: rgba(255,255,255,0.3);
+    white-space: nowrap;
+    font-weight: 400;
+  }
+
+  .nav-item.active .nav-progress { color: rgba(255,255,255,0.6); }
+
+  /* ─── MAIN ─── */
+  #main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: var(--white);
+  }
+
+  .page { display: none; padding: 36px 40px; max-width: 980px; width: 100%; }
+  .page.active { display: block; }
+
+  /* ─── PAGE HEADER ─── */
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 22px;
+    border-bottom: 1.5px solid var(--border);
+    gap: 16px;
+  }
+
+  .page-title-block {}
+
+  .page-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--grayM);
+    background: transparent !important;
+    padding: 0;
+    margin-bottom: 8px;
+  }
+
+  .page-title {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--black);
+    line-height: 1.1;
+  }
+
+  .page-subtitle {
+    font-size: 13px;
+    color: var(--grayM);
+    margin-top: 5px;
+    font-weight: 400;
+  }
+
+  .page-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    align-items: flex-start;
+    padding-top: 4px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    font-family: 'Figtree', sans-serif;
+  }
+
+  .btn-outline {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    color: var(--gray);
+  }
+
+  .btn-outline:hover { border-color: var(--dark); color: var(--dark); }
+
+  .btn-primary {
+    background: var(--black);
+    color: var(--white);
+  }
+
+  .btn-primary:hover { background: var(--gray); }
+
+  /* ─── PROGRESS BAR ─── */
+  .section-progress {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .progress-info { flex: 1; }
+  .progress-label { font-size: 12px; color: var(--grayM); margin-bottom: 6px; font-weight: 500; }
+
+  .progress-bar-wrap {
+    background: var(--grayL);
+    border-radius: 99px;
+    height: 5px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.4s ease;
+    background: var(--black) !important;
+  }
+
+  .progress-count {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--black);
+    white-space: nowrap;
+  }
+
+  .progress-count span { font-size: 12px; color: var(--grayM); font-weight: 400; }
+
+  /* ─── NOTE BOX ─── */
+  .note {
+    border-left: 3px solid #D1D5DB;
+    background: #F9FAFB;
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--gray);
+    margin-bottom: 16px;
+  }
+
+  .note.warn { border-color: #F59E0B; background: #FFFBEB; }
+  .note.alert { border-color: #EF4444; background: #FEF2F2; }
+  .note.tip   { border-color: #10B981; background: #F0FDF4; }
+
+  /* ─── ROOM GROUP ─── */
+  .room-group { margin-bottom: 20px; }
+
+  .room-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 8px;
+    align-items: center;
+  }
+
+  .room-tag {
+    display: inline-flex;
+    align-items: center;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--white);
+    padding: 3px 9px;
+    border-radius: 99px;
+    line-height: 1;
+  }
+
+  .task-list {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--white);
+  }
+
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+    cursor: pointer;
+  }
+
+  .task-item:last-child { border-bottom: none; }
+  .task-item:hover { background: #FAFAFA; }
+  .task-item.done { background: #FAFAFA; }
+
+  .task-cb {
+    width: 17px;
+    height: 17px;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .task-item.done .task-cb {
+    background: var(--black);
+    border-color: var(--black);
+    color: var(--white);
+  }
+
+  .task-cb-check { font-size: 10px; display: none; }
+  .task-item.done .task-cb-check { display: block; }
+
+  .task-text {
+    flex: 1;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--dark);
+    transition: color 0.15s;
+  }
+
+  .task-item.done .task-text {
+    color: #9CA3AF;
+    text-decoration: line-through;
+    text-decoration-color: #D1D5DB;
+  }
+
+  .task-time {
+    font-size: 11px;
+    color: #9CA3AF;
+    white-space: nowrap;
+    font-weight: 400;
+  }
+
+  /* ─── TABLE (reference) ─── */
+  .ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background: var(--white);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1.5px solid var(--border);
+    font-size: 13px;
+  }
+
+  .ref-table th {
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--white);
+    background: var(--black);
+  }
+
+  .ref-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.45;
+    color: var(--dark);
+  }
+
+  .ref-table tr:last-child td { border-bottom: none; }
+  .ref-table tr:nth-child(even) td { background: #FAFAFA; }
+
+  /* ─── TIP CARD ─── */
+  .tip-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+  }
+
+  .tip-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .tip-card-icon { font-size: 18px; }
+
+  .tip-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--black);
+    flex: 1;
+  }
+
+  .tip-card-chevron {
+    color: var(--grayM);
+    font-size: 12px;
+    transition: transform 0.2s;
+  }
+
+  .tip-card.open .tip-card-chevron { transform: rotate(180deg); }
+
+  .tip-card-body {
+    display: none;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .tip-card.open .tip-card-body { display: block; }
+
+  .tip-card-body p { font-size: 13px; line-height: 1.6; color: var(--gray); margin-bottom: 8px; }
+  .tip-card-body p:last-child { margin-bottom: 0; }
+  .tip-card-body ul { padding-left: 18px; }
+  .tip-card-body li { font-size: 13px; line-height: 1.6; color: var(--gray); margin-bottom: 4px; }
+
+  /* ─── HOME DASHBOARD ─── */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .dash-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: box-shadow 0.15s, transform 0.12s;
+    border-top: 3px solid var(--border);
+  }
+
+  .dash-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); transform: translateY(-1px); }
+
+  .dash-card-icon { font-size: 22px; margin-bottom: 8px; }
+  .dash-card-title { font-size: 13px; font-weight: 700; color: var(--black); margin-bottom: 3px; }
+  .dash-card-sub { font-size: 11px; color: var(--grayM); margin-bottom: 10px; }
+  .dash-card-progress { font-size: 11px; color: var(--grayM); }
+
+  .dash-mini-bar {
+    background: var(--grayL);
+    border-radius: 99px;
+    height: 3px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+
+  .dash-mini-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: var(--black);
+    transition: width 0.4s;
+  }
+
+  /* ─── LAUNDRY PILLS ─── */
+  .laundry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .laundry-pill {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+
+  .laundry-pill-item { font-size: 13px; font-weight: 700; color: var(--black); margin-bottom: 4px; }
+  .laundry-pill-freq { font-size: 11px; color: var(--grayM); }
+  .laundry-pill-dry { font-size: 12px; color: var(--gray); font-weight: 500; margin-top: 5px; }
+
+  /* ─── SCROLLBAR ─── */
+  #sidebar::-webkit-scrollbar { width: 4px; }
+  #sidebar::-webkit-scrollbar-track { background: transparent; }
+  #sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 99px; }
+
+  /* ─── COMPLETED BANNER ─── */
+  .all-done-banner {
+    background: #F0FDF4;
+    border: 1.5px solid #BBF7D0;
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #15803D;
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div id="sidebar-header">
+    <h1>🏠 Rutinas del Hogar</h1>
+    <p>Buenos Aires · Piso 7 · Invierno</p>
+  </div>
+  <nav>
+    <div class="nav-section-label">Inicio</div>
+    <div class="nav-item active" data-page="home" onclick="showPage('home')">
+      <span class="nav-icon">🏠</span> Inicio
+    </div>
+
+    <div class="nav-section-label">Rutinas diarias</div>
+    <div class="nav-item" data-page="night" onclick="showPage('night')">
+      <span class="nav-icon">★</span> Night Shift
+      <span class="nav-progress" id="nav-prog-night"></span>
+    </div>
+    <div class="nav-item" data-page="daily" onclick="showPage('daily')">
+      <span class="nav-icon">☀</span> Mantenimiento Diario
+      <span class="nav-progress" id="nav-prog-daily"></span>
+    </div>
+
+    <div class="nav-section-label">Limpieza semanal</div>
+    <div class="nav-item" data-page="saturday" onclick="showPage('saturday')">
+      <span class="nav-icon">🧹</span> Sábados de Limpieza
+      <span class="nav-progress" id="nav-prog-saturday"></span>
+    </div>
+
+    <div class="nav-section-label">Mantenimiento</div>
+    <div class="nav-item" data-page="monthly" onclick="showPage('monthly')">
+      <span class="nav-icon">📅</span> Mensual
+      <span class="nav-progress" id="nav-prog-monthly"></span>
+    </div>
+    <div class="nav-item" data-page="quarterly" onclick="showPage('quarterly')">
+      <span class="nav-icon">🗓</span> Trimestral
+      <span class="nav-progress" id="nav-prog-quarterly"></span>
+    </div>
+    <div class="nav-item" data-page="semestral" onclick="showPage('semestral')">
+      <span class="nav-icon">📆</span> Semestral
+      <span class="nav-progress" id="nav-prog-semestral"></span>
+    </div>
+    <div class="nav-item" data-page="annual" onclick="showPage('annual')">
+      <span class="nav-icon">📋</span> Anual
+      <span class="nav-progress" id="nav-prog-annual"></span>
+    </div>
+
+    <div class="nav-section-label">Ropa</div>
+    <div class="nav-item" data-page="laundry" onclick="showPage('laundry')">
+      <span class="nav-icon">👕</span> Lavado de Ropa
+    </div>
+
+    <div class="nav-section-label">Referencia</div>
+    <div class="nav-item" data-page="tips" onclick="showPage('tips')">
+      <span class="nav-icon">💡</span> Tips y Problemas
+    </div>
+  </nav>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+<!-- ═══ HOME ═══ -->
+<div class="page active" id="page-home">
+  <div class="page-header">
+    <div class="page-title-block">
+      <div class="page-title">Buen día 👋</div>
+      <div class="page-subtitle" id="home-date"></div>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-outline" onclick="resetSection('night'); resetSection('daily'); renderAll()">↺ Reiniciar día</button>
+    </div>
+  </div>
+
+  <div class="dashboard-grid" id="dashboard-grid"></div>
+
+  <div class="note tip">
+    <strong>Tip del día:</strong> Acordate de largar el robot mientras cocinás la cena — el marido queda con el perro en la oficina. ¡Es la forma más fácil de tener los pisos listos sin esfuerzo!
+  </div>
+</div>
+
+<!-- ═══ NIGHT SHIFT ═══ -->
+<div class="page" id="page-night">
+  <div class="page-header">
+    <div class="page-title-block">
+      <div class="page-badge" style="background:var(--night)">★ Rutina nocturna</div>
+      <div class="page-title">Night Shift</div>
+      <div class="page-subtitle">~10–15 minutos antes de dormir</div>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-outline" onclick="resetSection('night'); renderPage('night')">↺ Reiniciar</button>
+      <button class="btn btn-primary" onclick="completeAll('night'); renderPage('night')" style="background:var(--nightM)">✓ Marcar todo</button>
+    </div>
+  </div>
+  <div id="progress-night"></div>
+  <div class="note" style="border-color:var(--nightM); background:var(--nightL)">
+    El robot ya limpió durante la cena — llegás a la noche con los pisos listos.
+  </div>
+  <div id="content-night"></div>
+</div>
+
+<!-- ═══ DAILY ═══ -->
+<div class="page" id="page-daily">
+  <div class="page-header">
+    <div class="page-title-block">
+      <div class="page-badge" style="background:var(--blue)">☀ Diario</div>
+      <div class="page-title">Mantenimiento Diario</div>
+      <div class="page-subtitle">Mañana / mediodía · ~35 minutos</div>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-outline" onclick="resetSection('daily'); renderPage('daily')">↺ Reiniciar</button>
+      <button class="btn btn-primary" onclick="completeAll('daily'); renderPage('daily')">✓ Marcar todo</button>
+    </div>
+  </div>
+  <div id="progress-daily"></div>
+  <div class="note">El lavavajillas y el robot hacen la mayor parte del trabajo pesado.</div>
+  <div id="content-daily"></div>
+</div>
+
+<!-- ═══ SATURDAY ═══ -->
+<div class="page" id="page-saturday">
+  <div class="page-header">
+    <div class="page-title-block">
+      <div class="page-badge" style="background:var(--blue)">🧹 Semanal</div>
+      <div class="page-title">Sábados de Limpieza</div>
+      <div class="page-subtitle">~2 a 2,5 horas · El robot hace los pisos, vos te enfocás en baños y superficies</div>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-outline" onclick="resetSection('saturday'); renderPage('saturday')">↺ Reiniciar</button>
+      <button class="btn btn-primary" onclick="completeAll('saturday'); renderPage('saturday')">✓ Marcar todo</button>
+    </div>
+  </div>
+  <div id="progress-saturday"></div>
+  <div class="note warn">Los baños siempre a mano — no usar el robot en baños, esparce mugre. Técnica: barrer en seco → mopa escurrida → squeegee al desagüe.</div>
+  <div id="content-saturday"></div>
+</div>
+
+<!-- ═══ MONTHLY ═══ -->
+<div class="page" id="page-monthly">
+  <div class="page-header">
+    <div class="page-title-block">
+      <div class="page-badge" style="background:var(--green)">📅 Mensual</div>
+      <div class="page-title">Tareas Mensuales</div>
+      <div class="page-subtitle">Primer sábado del mes · suma ~1,5 horas a la limpieza semanal</div>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-outline" onclick="resetSection('monthly'); renderPage('monthly')">↺ Reiniciar</button>
+      <button class="btn btn-primary" onclick="completeAll('monthly'); renderPage('monthly')" ">✓ Marcar todo</button>
+    </div>
+  </div>
+  <div id="progress-monthly"></div>
+  <div id="content-monthly"></div>
+</div>
+
+<!-- ═══ QUARTERLY ═══ -->
+<div class="page" id="page-quarterly">
+  <div class="page-header">
+    <div class="page-title-block">
+      <div class="page-badge" style="background:var(--amber)">🗓 Trimestral</div>
+      <div class="page-title">Tareas Trimestrales</div>
+      <div class="page-subtitle">Marzo · Junio · Septiembre · Diciembre</div>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-outline" onclick="resetSection('quarterly'); renderPage('quarterly')">↺ Reiniciar</button>
+      <button class="btn btn-primary" onclick="completeAll('quarterly'); renderPage('quarterly')" ">✓ Marcar todo</button>
+    </div>
+  </div>
+  <div id="progress-quarterly"></div>
+  <div id="content-quarterly"></div>
+</div>
+
+<!-- ═══ SEMESTRAL ═══ -->
+<div class="page" id="page-semestral">
+  <div class="page-header">
+    <div class="page-title-block">
+      <div class="page-badge" style="background:var(--purple)">📆 Semestral</div>
+      <div class="page-title">Tareas Semestrales</div>
+      <div class="page-subtitle">Abril y Octubre</div>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-outline" onclick="resetSection('semestral'); renderPage('semestral')">↺ Reiniciar</button>
+      <button class="btn btn-primary" onclick="completeAll('semestral'); renderPage('semestral')" ">✓ Marcar todo</button>
+    </div>
+  </div>
+  <div id="progress-semestral"></div>
+  <div id="content-semestral"></div>
+</div>
+
+<!-- ═══ ANNUAL ═══ -->
+<div class="page" id="page-annual">
+  <div class="page-header">
+    <div class="page-title-block">
+      <div class="page-badge" style="background:var(--rose)">📋 Anual</div>
+      <div class="page-title">Tareas Anuales</div>
+      <div class="page-subtitle">Octubre / Noviembre · Revisión general del departamento</div>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-outline" onclick="resetSection('annual'); renderPage('annual')">↺ Reiniciar</button>
+      <button class="btn btn-primary" onclick="completeAll('annual'); renderPage('annual')" ">✓ Marcar todo</button>
+    </div>
+  </div>
+  <div id="progress-annual"></div>
+  <div id="content-annual"></div>
+</div>
+
+<!-- ═══ LAUNDRY ═══ -->
+<div class="page" id="page-laundry">
+  <div class="page-header">
+    <div class="page-title-block">
+      <div class="page-badge" style="background:var(--teal)">👕 Referencia</div>
+      <div class="page-title">Lavado de Ropa</div>
+      <div class="page-subtitle">Clasificación, frecuencias y tips de secado para invierno en Buenos Aires</div>
+    </div>
+  </div>
+
+  <!-- FLUJO DE LAVADO -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+    <div style="background:#1E1B4B;color:#fff;border-radius:10px;padding:16px">
+      <div style="font-size:18px;margin-bottom:6px">🌙 Lavado nocturno</div>
+      <div style="font-size:12px;opacity:0.75;margin-bottom:10px">Después de las 6PM</div>
+      <div style="font-size:13px;line-height:1.7">
+        <strong>Qué lavar:</strong> sábanas, fundas, ropa interior y medias<br>
+        <strong>Secado:</strong> secarropas directo — listas para usar<br>
+        <strong>Por qué de noche:</strong> sin luz afuera, el secarropas es la única opción viable
+      </div>
+    </div>
+    <div style="background:#0F766E;color:#fff;border-radius:10px;padding:16px">
+      <div style="font-size:18px;margin-bottom:6px">☀️ Lavado diurno</div>
+      <div style="font-size:12px;opacity:0.75;margin-bottom:10px">Durante el día</div>
+      <div style="font-size:13px;line-height:1.7">
+        <strong>Qué lavar:</strong> remeras, jeans, busos, ropa deportiva<br>
+        <strong>Si está lindo:</strong> 🌤 tender en el balcón (siempre preferido)<br>
+        <strong>Si llueve:</strong> 🏠 tender en el living como último recurso
+      </div>
+    </div>
+  </div>
+
+  <!-- CICLOS SAMSUNG -->
+  <div style="background:#F0F9FF;border:1px solid #BAE6FD;border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px">
+    <div style="font-size:22px">🫧</div>
+    <div>
+      <div style="font-weight:700;color:#0F172A;font-size:13px">Samsung lavasecarropas — ciclo estándar para todo</div>
+      <div style="color:#374151;font-size:12px;margin-top:3px">
+        <strong>Lavado rápido</strong> (15 min) → <strong>Drenar y centrifugar</strong> (15 min) = <strong>~30 min en total</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="note tip"><strong>Toallas en el tender — técnica correcta:</strong> El técnico de Samsung advirtió no usar el secarropas — la pelusa de las toallas tapa el desagüe. En cambio: centrifugar a 1200rpm, sacudir fuerte antes de colgar (abre las fibras), colgar extendidas vertical sobre dos barras (nunca dobladas). En el balcón con viento del piso 7 secan en 3–5 hs. Si llueve: ventilador apuntando directo + purificador + calefacción cerca.</div>
+
+  <h3 style="font-size:15px;font-weight:700;color:#0A0A0A;margin:20px 0 10px">Frecuencia y secado por prenda</h3>
+  <div class="laundry-grid" id="laundry-grid"></div>
+
+  <h3 style="font-size:15px;font-weight:700;color:#0A0A0A;margin:20px 0 10px">Configuraciones del lavasecarropas</h3>
+  <table class="ref-table">
+    <thead><tr><th>Prenda</th><th>Temperatura</th><th>Centrifugado</th><th>Secadora</th></tr></thead>
+    <tbody>
+      <tr><td>Ropa interior y medias</td><td>40°C</td><td>1200 rpm</td><td>✅ Ciclo corto (40 min)</td></tr>
+      <tr><td>Remeras y ropa liviana</td><td>30–40°C</td><td>1000–1200 rpm</td><td>❌ Tender (se arrugan)</td></tr>
+      <tr><td>Jeans y pantalones</td><td>30°C</td><td>800 rpm</td><td>❌ Tender (pueden encoger)</td></tr>
+      <tr><td>Sábanas y fundas</td><td>60°C</td><td>1000 rpm</td><td>✅ Ciclo completo</td></tr>
+      <tr><td>Toallas y toallones</td><td>60°C</td><td>1200 rpm</td><td>❌ No usar — pelusa tapa el desagüe (aviso técnico Samsung) → tender</td></tr>
+      <tr><td>Ropa deportiva / lycra</td><td>30°C</td><td>600–800 rpm (suave)</td><td>❌ Pierde elasticidad</td></tr>
+      <tr><td>Ropa del perro / mantas</td><td>60°C</td><td>1000 rpm</td><td>✅ Ciclo completo — sola</td></tr>
+      <tr><td>Busos y hoodies</td><td>30°C</td><td>600 rpm</td><td>❌ Pueden encoger</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="font-size:15px;font-weight:700;color:#0A0A0A;margin:20px 0 10px">Dónde colgar la ropa</h3>
+  <table class="ref-table">
+    <thead><tr><th>Situación</th><th>Dónde colgar</th><th>Por qué</th></tr></thead>
+    <tbody>
+      <tr style="background:#F0FDF4"><td><strong>🌤 Día lindo (sin lluvia)</strong></td><td><strong>Tender en el balcón</strong> ← opción preferida</td><td>El viento del piso 7 seca mucho más rápido que el living, aunque no haya sol directo. Sujetar bien con broches.</td></tr>
+      <tr><td><strong>🌧 Llueve o llovizna</strong></td><td>Tender en el living (último recurso)</td><td>Solo en este caso. Ventilar el living 10 min cada 1-2 horas y usar el purificador de aire.</td></tr>
+      <tr><td><strong>🛁 Toallas y toallones</strong></td><td colspan="2"><strong>1200 rpm + sacudir fuerte con ambas manos antes de colgar</strong> — esto abre las fibras y reduce el tiempo de secado a la mitad. Colgar extendidas sobre dos barras (nunca dobladas — el centro no seca). No van al secarropas: la pelusa tapa el desagüe (aviso técnico Samsung).</td></tr>
+      <tr><td><strong>Antes de colgar</strong></td><td colspan="2">Sacudir cada prenda · Centrifugar al máximo que permita la tela · No sobrecargar · Sacudir el pelo del perro</td></tr>
+      <tr><td><strong>El perro y el tender</strong></td><td colspan="2">Poner lejos de donde duerme el perro · Guardar el tender cuando está vacío · Sacudir la ropa seca antes de doblar</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══ TIPS ═══ -->
+<div class="page" id="page-tips">
+  <div class="page-header">
+    <div class="page-title-block">
+      <div class="page-badge" style="background:var(--grayM)">💡 Referencia</div>
+      <div class="page-title">Tips y Problemas</div>
+      <div class="page-subtitle">Guía de referencia para situaciones específicas</div>
+    </div>
+  </div>
+  <div id="tips-content"></div>
+</div>
+
+</main>
+
+<script>
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+
+const SECTIONS = {
+  night: {
+    color: '#1E1B4B',
+    groups: [
+      { label: '🌙 Cocina / Living', color: '#1E1B4B', tasks: [
+        ['Guardar todo lo que quedó en la mesada y en la mesa', '3 min'],
+        ['Enjuagar y cargar el lavavajillas, ponerlo en marcha', '5 min'],
+        ['Pasar un trapo húmedo a la mesada y la hornalla', '3 min'],
+        ['Limpiar el robot (vaciar depósito si es necesario)', '2 min'],
+      ]},
+      { label: '🚻 Toilette + Baño', color: '#1E1B4B', tasks: [
+        ['Toilette: revisión rápida — colgar toallas, cerrar tubos', '1 min'],
+        ['Baño: colgar toallas, dejar todo en orden', '2 min'],
+      ]},
+      { label: '🛏 Dormitorio / Oficina / General', color: '#1E1B4B', tasks: [
+        ['Dormitorio: preparar la ropa del día siguiente', '3 min'],
+        ['Dormitorio: ordenar lo que quedó tirado', '3 min'],
+        ['Oficina: dejar el escritorio ordenado, apagar equipos', '2 min'],
+        ['Apagar luces y cerrar puertas/ventanas', '1 min'],
+      ]},
+    ]
+  },
+  daily: {
+    color: '#2563A8',
+    groups: [
+      { label: '🍳 Cocina / Comedor / Living', color: '#2563A8', tasks: [
+        ['Ventilar 10 minutos a la mañana (aprovechar el sol temprano)', '10 min'],
+        ['Enjuagar platos y utensilios, cargar el lavavajillas', '5 min'],
+        ['Pasar trapo a la mesada después de cocinar', '3 min'],
+        ['Recoger la mesa del comedor y ordenar el living', '5 min'],
+      ]},
+      { label: '🚪 Baños', color: '#2563A8', tasks: [
+        ['Toilette: bajar la tapa y ventilar', '1 min'],
+        ['Baño completo: colgar toallas prolijamente', '2 min'],
+      ]},
+      { label: '🛏 Dormitorio / Oficina', color: '#2563A8', tasks: [
+        ['Airear la cama al levantarse (dejar 15 min destapada)', '0 min'],
+        ['Hacer la cama', '5 min'],
+        ['Oficina: ordenar escritorio antes de terminar el día', '3 min'],
+      ]},
+      { label: '🏠 General', color: '#2563A8', tasks: [
+        ['Recoger objetos fuera de lugar en todos los ambientes', '5 min'],
+        ['Revisar si hay que sacar la basura', '2 min'],
+      ]},
+    ]
+  },
+  saturday: {
+    color: '#1A3A5C',
+    groups: [
+      { label: '🍳 Cocina / Comedor / Living', color: '#1A3A5C', tasks: [
+        ['Limpiar a fondo mesadas, backsplash y pileta', '10 min'],
+        ['Limpiar hornalla, horno (exterior) y microondas', '10 min'],
+        ['Limpiar la heladera por fuera (manijas, frente)', '5 min'],
+        ['Vaciar y limpiar cestos de basura', '5 min'],
+        ['Revisar el filtro interno del lavavajillas', '8 min'],
+        ['Quitar polvo de muebles, estantes y mesa del comedor', '8 min'],
+        ['Pasar el limpia tapizados por el sofá y sillones', '10 min'],
+        ['Largar el robot (marido queda con el perro en la oficina)', '2 min'],
+      ]},
+      { label: '🚻 Toilette', color: '#4BACC6', tasks: [
+        ['Limpiar inodoro (por dentro y por fuera)', '7 min'],
+        ['Limpiar lavabo y canilla', '5 min'],
+        ['Limpiar espejo', '2 min'],
+        ['Barrer en seco → trapear → squeegee al desagüe', '5 min'],
+      ]},
+      { label: '🧺 Antebaño / Lavadero', color: '#4BACC6', tasks: [
+        ['Limpiar el lavatorio y superficies', '6 min'],
+        ['Limpiar el exterior del lavasecarropas', '3 min'],
+        ['Fregar el piso del antebaño', '5 min'],
+      ]},
+      { label: '🚿 Baño completo', color: '#1A3A5C', tasks: [
+        ['Limpiar inodoro (por dentro y por fuera)', '8 min'],
+        ['Limpiar lavabo y canilla', '5 min'],
+        ['Limpiar la ducha y los azulejos', '10 min'],
+        ['Limpiar espejo', '3 min'],
+        ['Barrer en seco → trapear con mopa escurrida → squeegee', '8 min'],
+      ]},
+      { label: '🛏 Dormitorio', color: '#3730A3', tasks: [
+        ['Cambiar ropa de cama (lavar en lavasecarropas)', '10 min'],
+        ['Quitar polvo de muebles y mesitas de luz', '5 min'],
+        ['Aspirar y trapear el piso', '8 min'],
+      ]},
+      { label: '💻 Oficina', color: '#3730A3', tasks: [
+        ['Quitar polvo del escritorio, pantalla y teclado', '8 min'],
+        ['Organizar papeles y cables', '5 min'],
+      ]},
+      { label: '🚶 Pasillo / General', color: '#6B7280', tasks: [
+        ['Verificar que el robot haya pasado por el pasillo', '2 min'],
+      ]},
+    ]
+  },
+  monthly: {
+    color: '#15803D',
+    groups: [
+      { label: '🍳 Cocina / Comedor / Living', color: '#15803D', tasks: [
+        ['Limpiar el interior del horno', '20 min'],
+        ['Limpiar estantes y el interior de alacenas', '15 min'],
+        ['Revisar y descartar alimentos vencidos', '10 min'],
+        ['Limpiar el filtro de la campana extractora', '10 min'],
+        ['Limpiar el filtro y el interior del lavavajillas', '10 min'],
+      ]},
+      { label: '🚻 Toilette', color: '#15803D', tasks: [
+        ['Descalcificar la canilla y revisar azulejos', '10 min'],
+        ['Limpiar juntas y selladores', '8 min'],
+      ]},
+      { label: '🧺 Antebaño / Lavadero', color: '#15803D', tasks: [
+        ['Limpiar el tambor del lavasecarropas con paño húmedo', '10 min'],
+        ['Revisar mangueras (derrames, torceduras)', '5 min'],
+      ]},
+      { label: '🚿 Baño completo', color: '#15803D', tasks: [
+        ['Descalcificar la alcachofa de la ducha', '10 min'],
+        ['Limpiar a fondo la cortina o mampara', '10 min'],
+        ['Revisar y limpiar juntas de azulejos', '10 min'],
+      ]},
+      { label: '🛏 Dormitorio', color: '#15803D', tasks: [
+        ['Organizar el armario/closet', '20 min'],
+        ['Limpiar debajo de la cama', '5 min'],
+        ['Pasar el limpia tapizados por el colchón', '10 min'],
+      ]},
+      { label: '💻 Oficina', color: '#15803D', tasks: [
+        ['Organizar archivos físicos y cables', '15 min'],
+        ['Limpiar pantalla, teclado y mouse a fondo', '10 min'],
+      ]},
+      { label: '🤖 Robot + General', color: '#15803D', tasks: [
+        ['Limpiar interruptores, tomas y manijas de puertas', '10 min'],
+        ['Revisar y cambiar lámparas fundidas', '10 min'],
+        ['Limpiar luminarias y apliques', '10 min'],
+        ['Robot: cepillos (pelo), filtro, depósito y mopa — limpieza profunda', '15 min'],
+        ['Revisar bolsas de silica gel en placares', '5 min'],
+      ]},
+    ]
+  },
+  quarterly: {
+    color: '#B45309',
+    groups: [
+      { label: '📋 Todas las tareas trimestrales', color: '#B45309', tasks: [
+        ['Limpiar la heladera por dentro a fondo (vaciarla)', '30 min'],
+        ['Limpiar detrás y debajo de la heladera', '15 min'],
+        ['Descalcificar la cafetera y la pava eléctrica', '15 min'],
+        ['Lavasecarropas: tambor y gomas a fondo', '20 min'],
+        ['Revisar y limpiar el sifón del desagüe del antebaño', '15 min'],
+        ['Revisar y limpiar el sifón del desagüe del baño completo', '15 min'],
+        ['Revisar el estado de la lechada y sellador del baño', '10 min'],
+        ['Dar vuelta el colchón', '10 min'],
+        ['Lavar almohadas en el lavasecarropas', '— ciclo'],
+        ['Revisión profunda de la oficina', '30 min'],
+        ['Lavar cortinas o limpiar persianas a fondo', '30 min'],
+        ['Limpiar marcos de ventanas y rieles', '20 min'],
+        ['Limpiar vidrios exteriores de las ventanas', '20 min'],
+        ['Revisar detectores de humo (batería y funcionamiento)', '5 min'],
+        ['Robot: revisar y limpiar los sensores', '10 min'],
+      ]},
+    ]
+  },
+  semestral: {
+    color: '#6D28D9',
+    groups: [
+      { label: '📋 Todas las tareas semestrales', color: '#6D28D9', tasks: [
+        ['Limpiar ventiladores o filtros de aire acondicionado', '30 min'],
+        ['Revisar mangueras y conexiones de gas visibles', '15 min'],
+        ['Revisar silicona y sellado del inodoro del toilette', '15 min'],
+        ['Revisar y limpiar el desagüe de la ducha a fondo', '20 min'],
+        ['Revisar sellado de la mampara o cortina del baño', '10 min'],
+        ['Lavar edredones y acolchados en el lavasecarropas', '— ciclo largo'],
+        ['Rotar fundas del edredón (desgaste parejo)', '5 min'],
+        ['Limpieza externa de PC/notebook (ventiladores)', '20 min'],
+        ['Ordenar y depurar: donar o descartar lo que no se usa', '60 min'],
+        ['Limpiar detrás y debajo de todos los muebles grandes', '40 min'],
+        ['Revisar sellos de puertas y ventanas', '15 min'],
+        ['Limpiar filtros del aire acondicionado', '20 min'],
+      ]},
+    ]
+  },
+  annual: {
+    color: '#BE185D',
+    groups: [
+      { label: '📋 Todas las tareas anuales', color: '#BE185D', tasks: [
+        ['Revisar y destapar todos los desagües del depto.', '30 min'],
+        ['Reemplazar el filtro de agua si aplica', '15 min'],
+        ['Revisar electrodomésticos: cables, enchufes, estado', '30 min'],
+        ['Revisar presión del agua y grifos del toilette', '15 min'],
+        ['Revisar presión del agua y grifos del baño completo', '15 min'],
+        ['Revisar el estado del colchón (reemplazar si es necesario)', '15 min'],
+        ['Revisión total de la oficina (digitalizar archivos)', '60 min'],
+        ['Revisión y mantenimiento del matafuego', '10 min'],
+        ['Organización total: cada cajón, estante y armario', '120 min'],
+        ['Limpieza profunda de paredes (manchas, huellas)', '60 min'],
+        ['Revisar pintura, posibles humedades y grietas', '30 min'],
+        ['Revisión de instalaciones eléctricas (profesional si hay dudas)', '30 min'],
+      ]},
+    ]
+  },
+};
+
+const LAUNDRY_ITEMS = [
+  { item: 'Ropa interior y medias', freq: 'Cada 1–2 usos', dry: '🌙 Secarropas — lavar de noche' },
+  { item: 'Sábanas y fundas', freq: 'Cada 1–2 semanas', dry: '🌙 Secarropas — lavar de noche' },
+  { item: 'Toallas y toallones', freq: 'Cada semana', dry: '🌤 Tender en balcón (1200rpm + sacudir fuerte) · 🏠 Living con ventilador si llueve' },
+  { item: 'Remeras y ropa de uso diario', freq: 'Cada 2–3 usos', dry: '🌤 Balcón · 🏠 Living solo si llueve' },
+  { item: 'Jeans y pantalones gruesos', freq: 'Cada 4–5 usos', dry: '🌤 Balcón · 🏠 Living solo si llueve' },
+  { item: 'Busos y hoodies', freq: 'Cada 3–4 usos', dry: '🌤 Balcón · 🏠 Living si llueve (no secadora)' },
+  { item: 'Ropa deportiva / lycra', freq: 'Después de cada uso', dry: '🌤 Balcón · 🏠 Living si llueve — nunca secadora' },
+  { item: 'Ropa del perro / mantas', freq: 'Cada 2 semanas', dry: '✅ Secarropas 60°C — sola' },
+];
+
+const TIPS = [
+  {
+    icon: '💧', title: 'Humedad de invierno — todo el departamento',
+    content: `<p>Piso 7, orientación sudeste, Buenos Aires: sol solo temprano a la mañana y casi nulo en invierno. Sin sol directo, la humedad no se disipa naturalmente.</p>
+    <ul>
+      <li><strong>Ventilar 10 minutos cada mañana</strong> — el aire exterior en invierno tiene menos humedad relativa que el interior.</li>
+      <li><strong>Condensación en vidrios:</strong> pasar un paño seco para evitar que el agua acumule moho en los marcos.</li>
+      <li><strong>No tender ropa sin ventilar</strong> — suma mucha humedad al aire.</li>
+      <li><strong>Placard:</strong> poner bolsas de silica gel y dejar la puerta entreabierta cuando no se usa.</li>
+      <li><strong>Purificador de aire:</strong> en invierno usarlo más seguido — ayuda a circular el aire estancado en el living.</li>
+      <li><strong>Deshumidificador portátil:</strong> en invierno es cuando más se justifica, especialmente en el baño y días de lluvia.</li>
+    </ul>`
+  },
+  {
+    icon: '🚿', title: 'Humedad y pisos del baño — baño completamente cerrado',
+    content: `<p><strong>Extractor instalado que no funciona bien:</strong></p>
+    <ul>
+      <li>Paso 1: Limpiar el filtro — puede estar tapado.</li>
+      <li>Paso 2: Prueba del papel tisú: acercarlo a la rejilla de salida. Si no es atraído, es de recirculación y no extrae humedad real.</li>
+      <li>Si no mejora: reemplazar o agregar deshumidificador portátil.</li>
+    </ul>
+    <p style="margin-top:8px"><strong>Técnica de trapeado para baño sin ventilación:</strong></p>
+    <ol style="padding-left:18px">
+      <li>Barrer en seco para levantar pelo del perro.</li>
+      <li>Trapear con mopa de microfibra muy escurrida.</li>
+      <li>Pasar el squeegee para llevar el agua al desagüe.</li>
+      <li>Puerta abierta + ventilador apuntando al baño 15 min.</li>
+    </ol>
+    <p style="margin-top:8px">Resultado: piso seco en 10–15 minutos en vez de horas.</p>`
+  },
+  {
+    icon: '🐶', title: 'Perro de pelo largo — ajustes a la rutina',
+    content: `<ul>
+      <li><strong>Depósito del robot:</strong> vaciar después de cada ciclo.</li>
+      <li><strong>Cepillos del robot:</strong> limpiar 2–3 veces por semana (el pelo largo se enreda y puede trabar el motor).</li>
+      <li><strong>Filtro del robot:</strong> revisar mensualmente (no trimestral — con mucho pelo se tapa antes).</li>
+      <li><strong>Baños antes de trapear:</strong> siempre barrer en seco primero para levantar el pelo.</li>
+      <li><strong>Tender:</strong> poner lejos de donde duerme el perro; cubrir o guardar cuando está vacío.</li>
+      <li><strong>Ropa al lavarropas:</strong> sacudir o pasar el limpia tapizados antes de meter en la máquina — el pelo en cantidad puede tapar el filtro.</li>
+      <li><strong>Limpia tapizados:</strong> sofá y sillones semanalmente, colchón mensualmente.</li>
+    </ul>`
+  },
+  {
+    icon: '🪟', title: 'Balcón sin sol en invierno — ¿sirve para secar ropa?',
+    content: `<p><strong>Sí, el balcón es mejor que el living aunque no haya sol.</strong></p>
+    <p>El sol no es el factor más importante para secar ropa: es el movimiento del aire. En un piso 7 casi siempre hay circulación, y el aire exterior tiene menor humedad relativa que el living cuando hay ropa colgada adentro.</p>
+    <ul>
+      <li>Si no llueve ni hay llovizna, siempre mejor el balcón.</li>
+      <li>Los días con viento fresco son ideales; los días nublados sin viento y muy húmedos (agosto en BA) son similares a adentro.</li>
+      <li>Sujetar bien con broches — en piso 7 el viento puede ser fuerte.</li>
+      <li>La ropa en balcón no suma humedad al departamento, un beneficio enorme en invierno.</li>
+    </ul>`
+  },
+  {
+    icon: '🤖', title: 'Robot aspirador/trapeador — cómo sacarle el máximo provecho',
+    content: `<ul>
+      <li><strong>Cuándo largarlo:</strong> mientras cocinás la cena — el marido queda con el perro en la oficina y el robot limpia el resto del depto.</li>
+      <li><strong>No usarlo en baños:</strong> en espacios chicos la mopa se satura y esparce mugre.</li>
+      <li><strong>Pisos despejados:</strong> cuanto menos haya en el piso (cables, juguetes del perro), mejor limpia.</li>
+      <li><strong>Depósito:</strong> vaciar después de cada ciclo — el pelo del perro lo llena rápido.</li>
+      <li><strong>Cepillos:</strong> 2–3 veces por semana — el pelo largo se enreda.</li>
+      <li><strong>Mopa:</strong> lavar después de cada uso — el pelo mojado fermenta y genera olor.</li>
+      <li><strong>Filtro:</strong> revisar mensualmente.</li>
+    </ul>`
+  },
+  {
+    icon: '🧼', title: 'Porcellanato — qué usar y qué evitar',
+    content: `<ul>
+      <li>✅ <strong>Usar:</strong> limpiador de pH neutro diluido en agua tibia.</li>
+      <li>✅ <strong>Usar:</strong> mopa de microfibra bien escurrida — no necesita mucha agua.</li>
+      <li>❌ <strong>Evitar:</strong> vinagre puro o ácidos fuertes — dañan el esmalte y opacan el piso.</li>
+      <li>❌ <strong>Evitar:</strong> estropajos o esponjas abrasivas — rayen la superficie.</li>
+      <li>❌ <strong>Evitar:</strong> exceso de agua — favorece el moho en juntas.</li>
+    </ul>`
+  },
+  {
+    icon: '🏠', title: 'Electrodomésticos — mantenimiento rápido',
+    content: `<p><strong>Robot aspirador:</strong> cepillos 2-3x/semana · depósito diario · filtro mensual · sensores trimestral.</p>
+    <p><strong>Lavavajillas:</strong> no pre-lavar · pastillas todo-en-uno · filtro mensual · ciclo de limpieza interno mensual.</p>
+    <p><strong>Lavasecarropas:</strong> no sobrecargar · tambor y gomas mensual · profundo trimestral.</p>
+    <p><strong>Limpia tapizados:</strong> sofá semanal · colchón mensual · limpiar filtro mensualmente.</p>
+    <p><strong>Purificador de aire:</strong> filtro según modelo, revisar mensualmente. Usarlo más en invierno en el living.</p>`
+  },
+];
+
+// ═══════════════════════════════════════
+// AUTO-RESET CONFIG
+// Cuántos días deben pasar para que cada
+// sección se resetee automáticamente.
+// ═══════════════════════════════════════
+
+const RESET_DAYS = {
+  night:     1,    // cada día
+  daily:     1,    // cada día
+  saturday:  7,    // cada semana
+  monthly:   30,   // cada mes
+  quarterly: 90,   // cada trimestre
+  semestral: 180,  // cada semestre
+  annual:    365,  // cada año
+};
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+
+function getState() {
+  try { return JSON.parse(localStorage.getItem('hogar-state') || '{}'); }
+  catch { return {}; }
+}
+
+function setState(s) {
+  localStorage.setItem('hogar-state', JSON.stringify(s));
+}
+
+function daysBetween(dateStr) {
+  if (!dateStr) return Infinity;
+  const diff = Date.now() - new Date(dateStr).getTime();
+  return diff / (1000 * 60 * 60 * 24);
+}
+
+// Resetea la sección si ya pasó el período configurado
+function autoResetIfExpired(section) {
+  const s = getState();
+  const meta = s[`_meta_${section}`] || {};
+  const days = RESET_DAYS[section];
+  if (!days) return;
+  if (daysBetween(meta.lastReset) >= days) {
+    s[section] = {};
+    s[`_meta_${section}`] = { lastReset: new Date().toISOString() };
+    setState(s);
+  }
+}
+
+function isTaskDone(section, groupIdx, taskIdx) {
+  const s = getState();
+  return !!(s[section] && s[section][`${groupIdx}-${taskIdx}`]);
+}
+
+function toggleTask(section, groupIdx, taskIdx) {
+  const s = getState();
+  if (!s[section]) s[section] = {};
+  const key = `${groupIdx}-${taskIdx}`;
+  s[section][key] = !s[section][key];
+  // Si quedó en false, no actualizar lastReset
+  // Si marcó algo por primera vez, guardar timestamp de inicio de sesión
+  if (!s[`_meta_${section}`]) {
+    s[`_meta_${section}`] = { lastReset: new Date().toISOString() };
+  }
+  setState(s);
+}
+
+function resetSection(section) {
+  const s = getState();
+  s[section] = {};
+  s[`_meta_${section}`] = { lastReset: new Date().toISOString() };
+  setState(s);
+}
+
+function completeAll(section) {
+  const s = getState();
+  s[section] = {};
+  const sec = SECTIONS[section];
+  sec.groups.forEach((g, gi) => {
+    g.tasks.forEach((_, ti) => { s[section][`${gi}-${ti}`] = true; });
+  });
+  if (!s[`_meta_${section}`]) {
+    s[`_meta_${section}`] = { lastReset: new Date().toISOString() };
+  }
+  setState(s);
+}
+
+function getResetLabel(section) {
+  const s = getState();
+  const meta = s[`_meta_${section}`] || {};
+  const days = RESET_DAYS[section];
+  if (!meta.lastReset || !days) return null;
+  const elapsed = daysBetween(meta.lastReset);
+  const remaining = Math.max(0, days - elapsed);
+  if (remaining < 1) return 'Se resetea hoy';
+  if (remaining < 2) return 'Se resetea mañana';
+  if (remaining < 7) return `Se resetea en ${Math.ceil(remaining)} días`;
+  if (remaining < 31) return `Se resetea en ${Math.ceil(remaining / 7)} semanas`;
+  return `Se resetea en ${Math.ceil(remaining / 30)} meses`;
+}
+
+function getSectionProgress(section) {
+  const sec = SECTIONS[section];
+  if (!sec) return { done: 0, total: 0 };
+  let total = 0, done = 0;
+  sec.groups.forEach((g, gi) => {
+    g.tasks.forEach((_, ti) => {
+      total++;
+      if (isTaskDone(section, gi, ti)) done++;
+    });
+  });
+  return { done, total };
+}
+
+// ═══════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════
+
+function renderProgressBar(section, containerId) {
+  const { done, total } = getSectionProgress(section);
+  const pct = total ? Math.round(done / total * 100) : 0;
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  if (done === total && total > 0) {
+    container.innerHTML = `<div class="all-done-banner">🎉 ¡Sección completa! Todas las tareas terminadas.</div>`;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="section-progress">
+      <div class="progress-info">
+        <div class="progress-label">${done} de ${total} tareas completadas</div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" style="width:${pct}%"></div>
+        </div>
+      </div>
+      <div class="progress-count">${pct}%<span> completado</span></div>
+    </div>`;
+}
+
+// ─── ROOM TAG COLORS ───
+const ROOM_COLORS = {
+  'Cocina':     '#EA580C',
+  'Comedor':    '#DC2626',
+  'Living':     '#D97706',
+  'Toilette':   '#0891B2',
+  'Baño':       '#059669',
+  'Antebaño':   '#6366F1',
+  'Lavadero':   '#7C3AED',
+  'Laundry':    '#7C3AED',
+  'Dormitorio': '#9333EA',
+  'Oficina':    '#2563EB',
+  'Balcón':     '#65A30D',
+  'Pasillo':    '#6B7280',
+  'Robot':      '#374151',
+  'General':    '#6B7280',
+  'Todas':      '#6B7280',
+};
+
+function getRoomTags(label) {
+  // Strip emojis and non-letter characters at start, then split by / + or ·
+  const clean = label
+    .replace(/[^\p{L}\p{N}\s\/\+·\-]/gu, '')  // remove non-letter chars (emoji etc.)
+    .trim();
+  const parts = clean.split(/\s*[\/\+·]\s*/).map(p => p.trim()).filter(Boolean);
+  return parts.map(part => {
+    for (const [room, bg] of Object.entries(ROOM_COLORS)) {
+      if (part.toLowerCase().includes(room.toLowerCase())) {
+        return { label: room, bg };
+      }
+    }
+    return { label: part, bg: '#6B7280' };
+  });
+}
+
+function renderChecklist(section, containerId) {
+  const sec = SECTIONS[section];
+  const container = document.getElementById(containerId);
+  if (!container || !sec) return;
+
+  container.innerHTML = sec.groups.map((group, gi) => {
+    const tags = getRoomTags(group.label);
+    const tagsHtml = tags.map(t => `<span class="room-tag" style="background:${t.bg}">${t.label}</span>`).join('');
+    return `
+    <div class="room-group">
+      <div class="room-tags">${tagsHtml}</div>
+      <div class="task-list">
+        ${group.tasks.map(([task, time], ti) => {
+          const done = isTaskDone(section, gi, ti);
+          return `<div class="task-item ${done ? 'done' : ''}" onclick="handleToggle('${section}', ${gi}, ${ti})">
+            <div class="task-cb"><span class="task-cb-check">✓</span></div>
+            <div class="task-text">${task}</div>
+            <div class="task-time">${time}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderPage(section) {
+  renderProgressBar(section, `progress-${section}`);
+  renderChecklist(section, `content-${section}`);
+  updateNavProgress(section);
+}
+
+function renderAll() {
+  Object.keys(SECTIONS).forEach(s => renderPage(s));
+  renderDashboard();
+}
+
+function handleToggle(section, gi, ti) {
+  toggleTask(section, gi, ti);
+  renderPage(section);
+  renderDashboard();
+}
+
+// ── DASHBOARD ──
+
+function renderDashboard() {
+  const grid = document.getElementById('dashboard-grid');
+  if (!grid) return;
+
+  const cards = [
+    { id: 'night',    icon: '★',  label: 'Night Shift',       sub: 'Cada noche',          color: '#1E1B4B' },
+    { id: 'daily',    icon: '☀',  label: 'Mantenimiento',     sub: 'Diario',               color: '#2563A8' },
+    { id: 'saturday', icon: '🧹', label: 'Sábado de Limpieza',sub: 'Esta semana',          color: '#1A3A5C' },
+    { id: 'monthly',  icon: '📅', label: 'Mensual',           sub: 'Este mes',             color: '#15803D' },
+    { id: 'quarterly',icon: '🗓', label: 'Trimestral',        sub: 'Cada 3 meses',         color: '#B45309' },
+    { id: 'semestral',icon: '📆', label: 'Semestral',         sub: 'Cada 6 meses',         color: '#6D28D9' },
+    { id: 'annual',   icon: '📋', label: 'Anual',             sub: 'Una vez al año',       color: '#BE185D' },
+  ];
+
+  grid.innerHTML = cards.map(c => {
+    const { done, total } = getSectionProgress(c.id);
+    const pct = total ? Math.round(done / total * 100) : 0;
+    return `<div class="dash-card" onclick="showPage('${c.id}')">
+      <div class="dash-card-icon">${c.icon}</div>
+      <div class="dash-card-title">${c.label}</div>
+      <div class="dash-card-sub">${c.sub}</div>
+      <div class="dash-card-progress">${done} / ${total} tareas</div>
+      <div class="dash-mini-bar">
+        <div class="dash-mini-fill" style="width:${pct}%"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── NAV PROGRESS ──
+
+function updateNavProgress(section) {
+  const el = document.getElementById(`nav-prog-${section}`);
+  if (!el) return;
+  const { done, total } = getSectionProgress(section);
+  el.textContent = total ? `${done}/${total}` : '';
+}
+
+function updateAllNavProgress() {
+  Object.keys(SECTIONS).forEach(updateNavProgress);
+}
+
+// ── LAUNDRY ──
+
+function renderLaundry() {
+  const grid = document.getElementById('laundry-grid');
+  if (!grid) return;
+  grid.innerHTML = LAUNDRY_ITEMS.map(l => `
+    <div class="laundry-pill">
+      <div class="laundry-pill-item">${l.item}</div>
+      <div class="laundry-pill-freq">📅 ${l.freq}</div>
+      <div class="laundry-pill-dry">${l.dry}</div>
+    </div>`).join('');
+}
+
+// ── TIPS ──
+
+function renderTips() {
+  const el = document.getElementById('tips-content');
+  if (!el) return;
+  el.innerHTML = TIPS.map((t, i) => `
+    <div class="tip-card" id="tip-${i}">
+      <div class="tip-card-header" onclick="toggleTip(${i})">
+        <span class="tip-card-icon">${t.icon}</span>
+        <span class="tip-card-title">${t.title}</span>
+        <span class="tip-card-chevron">▼</span>
+      </div>
+      <div class="tip-card-body">${t.content}</div>
+    </div>`).join('');
+}
+
+function toggleTip(i) {
+  document.getElementById(`tip-${i}`).classList.toggle('open');
+}
+
+// ── HOME DATE ──
+
+function renderHomeDate() {
+  const el = document.getElementById('home-date');
+  if (!el) return;
+  const now = new Date();
+  const days = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  el.textContent = `${days[now.getDay()]}, ${now.getDate()} de ${months[now.getMonth()]} de ${now.getFullYear()}`;
+}
+
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const page = document.getElementById(`page-${id}`);
+  if (page) page.classList.add('active');
+
+  const navItem = document.querySelector(`[data-page="${id}"]`);
+  if (navItem) navItem.classList.add('active');
+
+  if (SECTIONS[id]) { autoResetIfExpired(id); renderPage(id); }
+  if (id === 'home') renderDashboard();
+  if (id === 'laundry') renderLaundry();
+  if (id === 'tips') renderTips();
+
+  window.scrollTo(0, 0);
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+
+window.addEventListener('DOMContentLoaded', () => {
+  // Auto-reset any sections whose period has expired
+  Object.keys(RESET_DAYS).forEach(s => autoResetIfExpired(s));
+  renderHomeDate();
+  renderDashboard();
+  renderAll();
+  updateAllNavProgress();
+});
+</script>
+</body>
+</html>
